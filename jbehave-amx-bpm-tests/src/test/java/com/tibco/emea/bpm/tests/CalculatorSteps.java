@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pl.bzwbk.corp.bzwbk_bpm_tests;
+package com.tibco.emea.bpm.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 
-import pl.bzwbk.corp.bzwbk_bpm_tests.ems.EmsClient;
+import com.tibco.emea.ems.EmsClient;
+
 
 /**
  * @author mr91988

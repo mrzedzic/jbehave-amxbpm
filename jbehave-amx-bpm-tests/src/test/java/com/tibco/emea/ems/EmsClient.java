@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pl.bzwbk.corp.bzwbk_bpm_tests.ems;
+package com.tibco.emea.ems;
 
 import java.util.Hashtable;
 

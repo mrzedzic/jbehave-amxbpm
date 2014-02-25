@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pl.bzwbk.corp.bzwbk_bpm_tests;
+package com.tibco.emea.bpm.tests;
 
 import java.util.List;
 
