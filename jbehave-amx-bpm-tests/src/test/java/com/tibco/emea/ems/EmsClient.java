@@ -68,40 +68,40 @@ public class EmsClient {
 		try {
 			// **** Create Connection, Session, producer
 			myDest = (Destination) jndiContext.lookup(queueName);
-
-			myDestReply = (Destination) jndiContext.lookup(queueName);
 			myProd = session.createProducer(myDest);
 			TextMessage msg1 = session.createTextMessage();
-			msg1.setText(element1 + "" + element2);
+			msg1.setText(element1 + element2 + "");
 			msg1.setIntProperty("X", element1);
 			msg1.setIntProperty("Y", element2);
 			msg1.setJMSCorrelationID(correlationId);
 
 			// Send message
-//			System.out.println("Sending " + msg1);
+			// System.out.println("Sending " + msg1);
 			myProd.send(msg1);
+			myProd.close();
 		} catch (NamingException e) {
 			System.out.println("Could not create or send message: " + e);
 		} catch (JMSException e) {
 			System.out.println("Exception in send message: " + e);
-			
+
 		}
 	}
 
-	public Message receiveMessage(String correlationId) {
-		javax.jms.Message message = null;
+	public Message receiveMessage(String correlationId, int waitTime) {
+		Message message = null;
 		try {
-			myCons = session.createConsumer(myDest, correlationId);
-
+			myDestReply = (Destination) jndiContext.lookup(queueName);
+			myCons = session.createConsumer(myDestReply);
+			
 			/* read queue messages */
-			while (true) {
-				message = myCons.receive();
-				if (message == null)
-					break;
-				System.out.println("Received message: " + message);
-			}
+			conn.start();
+			message = myCons.receive(waitTime * 1000);
+			conn.stop();
 		} catch (JMSException e) {
 			System.out.println("Exception in send message: " + e);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return message;
 	}

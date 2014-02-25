@@ -4,6 +4,7 @@
 package com.tibco.emea.bpm.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -16,14 +17,13 @@ import org.jbehave.core.annotations.Then;
 
 import com.tibco.emea.ems.EmsClient;
 
-
 /**
  * @author mr91988
  * 
  */
 public class CalculatorSteps {
 	EmsClient calculatorMessageRequest = null;
-	String correlationId = "test1";
+	String correlationId = String.valueOf(hashCode());
 
 	@BeforeStories
 	private void inicialise() {
@@ -33,27 +33,19 @@ public class CalculatorSteps {
 
 	@Given("send request via ems message with <value1> and <value2>")
 	public void add(@Named("value1") int value1, @Named("value2") int value2) {
-		// account = new Account(balance);
 		calculatorMessageRequest = new EmsClient();
 		calculatorMessageRequest.sendMessage(value1, value2, correlationId);
 
 	}
-	
-	@Then("wait for response $wait")
-	public void waitFor(@Named("wait") int wait) {
-		try {
-			Thread.sleep(wait*1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	@Then("the calculator return <result> in less than <maxWait> seconds")
+	public void receiveResults(@Named("result") int result,	@Named("maxWait") int maxTime) {
+		//calculatorMessageRequest = new EmsClient();
+		Message responseMessage = calculatorMessageRequest.receiveMessage(correlationId, maxTime);
+		
+		if (responseMessage == null) {
+			fail("response message was missing");
 		}
-
-	}
-
-	@Then("the calculator return <result>")
-	public void receiveResults(@Named("result") int result) {
-		Message responseMessage = calculatorMessageRequest
-				.receiveMessage(correlationId);
 		String responseBody = null;
 		TextMessage textMessage = (TextMessage) responseMessage;
 		try {
@@ -61,10 +53,9 @@ public class CalculatorSteps {
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("dupa");
 		}
 
-		assertEquals(Integer.parseInt(responseBody), result);
+		assertEquals(result, Integer.parseInt(responseBody));
 
 	}
 }
