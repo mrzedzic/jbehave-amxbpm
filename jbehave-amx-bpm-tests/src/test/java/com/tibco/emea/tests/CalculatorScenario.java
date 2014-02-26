@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.tibco.emea.bpm.tests;
+package com.tibco.emea.tests;
 
 import java.util.List;
 

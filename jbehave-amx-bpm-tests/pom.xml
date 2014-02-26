@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>pl.bzwbk.corp</groupId>
-	<artifactId>bzwbk-bpm-tests</artifactId>
+	<groupId>com.tibco.emea</groupId>
+	<artifactId>jbehave-bpm-tests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>bzwbk-bpm-tests</name>
+	<name>jbehave-amx-bpm-tests</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -33,18 +33,10 @@
 					<execution>
                     <id>run-stories</id>
                     <phase>integration-test</phase>
-                    <!--<configuration>-->
-                        <!--
-                        You could list all the scenarios to be run herei using mulitple <scenarioClassName/>
-                        elements, but that seems really tedious, everytime you add a new scenario you'd have
-                        to modifiy the list.  -->
-                        <!--<scenarioClassNames>-->
-                        <!--<scenarioClassName>com.mindflowsolutions.example.AScenarioscenarioClassName>-->
-                        <!--</scenarioClassNames>-->
 
                     <configuration>
                         <includes>
-                            <include>**/*CalculatorScenario.java</include>
+                            <include>**/*.java</include>
                         </includes>
 
                         <scope>test</scope>

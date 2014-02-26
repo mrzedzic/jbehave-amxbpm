@@ -3,6 +3,7 @@
  */
 package com.tibco.emea.ems;
 
+import java.util.Calendar;
 import java.util.Hashtable;
 
 import javax.jms.Connection;
@@ -17,6 +18,8 @@ import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import com.tibco.emea.bo.Calculator;
 
 /**
  * @author Marcin Rzedzicki
@@ -51,7 +54,6 @@ public class EmsClient {
 
 			conn = cFactory.createConnection();
 			session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
 		} catch (NamingException e) {
 			System.out.println("Failed JNDI InitialContext with " + serverUrl
 					+ ". Error = " + e.toString());
@@ -63,42 +65,48 @@ public class EmsClient {
 
 	}
 
-	public void sendMessage(int element1, int element2, String correlationId) {
+	public String sendQueueMessage(Calculator calc) {
+		return sendMessage(calc.getX(), calc.getY(),
+				String.valueOf(calc.getResult()));
+	}
 
+	public String sendMessage(int element1, int element2, String body) {
+		String correlationId = String.valueOf(Calendar.getInstance().getTimeInMillis())	+ "Test";
 		try {
-			// **** Create Connection, Session, producer
 			myDest = (Destination) jndiContext.lookup(queueName);
 			myProd = session.createProducer(myDest);
 			TextMessage msg1 = session.createTextMessage();
-			msg1.setText(element1 + element2 + "");
+			msg1.setText(body);
 			msg1.setIntProperty("X", element1);
 			msg1.setIntProperty("Y", element2);
 			msg1.setJMSCorrelationID(correlationId);
 
 			// Send message
-			// System.out.println("Sending " + msg1);
+//			System.out.println("Sending " + msg1);
 			myProd.send(msg1);
 			myProd.close();
 		} catch (NamingException e) {
 			System.out.println("Could not create or send message: " + e);
 		} catch (JMSException e) {
 			System.out.println("Exception in send message: " + e);
-
 		}
+		return correlationId;
 	}
 
 	public Message receiveMessage(String correlationId, int waitTime) {
 		Message message = null;
+		correlationId = "JMSCorrelationID='"+correlationId+"'";
 		try {
 			myDestReply = (Destination) jndiContext.lookup(queueName);
-			myCons = session.createConsumer(myDestReply);
-			
+			myCons = session.createConsumer(myDestReply, correlationId);
+
 			/* read queue messages */
 			conn.start();
 			message = myCons.receive(waitTime * 1000);
+			message.acknowledge();
 			conn.stop();
 		} catch (JMSException e) {
-			System.out.println("Exception in send message: " + e);
+			System.out.println("Exception in receive message: " + e);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
