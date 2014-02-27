@@ -12,11 +12,15 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.junit.runner.RunWith;
+
+import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 
 /**
  * @author mrzedzic
  * 
  */
+@RunWith(JUnitReportingRunner.class)
 public class CalculatorScenario extends JUnitStory {
 	 // Here we specify the configuration, starting from default MostUsefulConfiguration, and changing only what is needed
     @Override
@@ -25,7 +29,7 @@ public class CalculatorScenario extends JUnitStory {
                 // where to find the stories
                 .useStoryLoader(new LoadFromClasspath(this.getClass()))
                         // CONSOLE and TXT reporting
-                .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(StoryReporterBuilder.Format.CONSOLE, StoryReporterBuilder.Format.TXT, StoryReporterBuilder.Format.HTML, StoryReporterBuilder.Format.XML));
+                .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(StoryReporterBuilder.Format.CONSOLE, StoryReporterBuilder.Format.XML));
     }
 
     // Here we specify the steps classes
