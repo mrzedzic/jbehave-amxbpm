@@ -31,20 +31,20 @@
 
 				<executions>
 					<execution>
-                    <id>run-stories</id>
-                    <phase>integration-test</phase>
+						<id>run-stories</id>
+						<phase>integration-test</phase>
 
-                    <configuration>
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
+						<configuration>
+							<includes>
+								<include>**/*CalculatorScenario.java</include>
+							</includes>
 
-                        <scope>test</scope>
-                    </configuration>
-                    <goals>
-                        <goal>run-stories-as-embeddables</goal>
-                    </goals>
-                </execution>
+							<scope>test</scope>
+						</configuration>
+						<goals>
+							<goal>run-stories-as-embeddables</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
@@ -68,10 +68,15 @@
 			<artifactId>jms-api</artifactId>
 			<version>1.1-rev-1</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>com.tibco</groupId> -->
-		<!-- <artifactId>tibjms</artifactId> -->
-		<!-- <version>6.1</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>com.tibco</groupId>
+			<artifactId>jms</artifactId>
+			<version>6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tibco</groupId>
+			<artifactId>tibjms</artifactId>
+			<version>6.3</version>
+		</dependency>
 	</dependencies>
 </project>
