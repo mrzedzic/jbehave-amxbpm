@@ -7,6 +7,7 @@ package com.tibco.emea.bo;
  * @author mrzedzic
  *
  */
+
 public class Calculator {
 	private int x;
 	private int y;
@@ -21,27 +22,27 @@ public class Calculator {
 		this.y = y;
 	}
 	
-	public int getX() {
-		return x;
-	}
-	public void setX(int x) {
-		this.x = x;
-	}
-	public int getY() {
-		return y;
-	}
-	public void setY(int y) {
-		this.y = y;
+	public int add(int x, int y){
+		return x+y;
 	}
 	public int getResult() {
 		return result;
 	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
 	public void setResult(int result) {
 		this.result = result;
 	}
+	public void setX(int x) {
+		this.x = x;
+	}
 
-	public int add(int x, int y){
-		return x+y;
+	public void setY(int y) {
+		this.y = y;
 	}
 	public int subtract(int x, int y){
 		return x-y;

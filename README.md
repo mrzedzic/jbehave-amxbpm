@@ -5,3 +5,6 @@ jbehave-amxbpm
 marce@marce:/opt/tibco/ems/6.3/lib$ mvn install:install-file -Dfile=tibjms.jar -DgroupId=com.tibco -DartifactId=tibjms -Dversion=6.3 -Dpackaging=jar
 marce@marce:/opt/tibco/ems/6.3/lib$ mvn install:install-file -Dfile=tibjms.jar -DgroupId=com.tibco -DartifactId=jms -Dversion=6.3 -Dpackaging=jar
 
+
+http://mvnrepository.com/artifact/org.jbehave/jbehave-jenkins-plugin/4.0-beta-4
+
