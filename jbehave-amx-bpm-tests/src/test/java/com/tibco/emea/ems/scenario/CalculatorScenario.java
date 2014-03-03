@@ -1,9 +1,8 @@
-/**
- * 
- */
 package com.tibco.emea.ems.scenario;
 
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -11,16 +10,18 @@ import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.spring.SpringStoryReporterBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
-import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.tibco.emea.ems.steps.CalculatorSteps;
 
@@ -35,29 +36,35 @@ import com.tibco.emea.ems.steps.CalculatorSteps;
 @UsingSteps
 public class CalculatorScenario extends JUnitStories {
 	
-	protected List<String> storyPaths() {
+	@Resource(name = "storyReportBulder")
+	private SpringStoryReporterBuilder storyReportBulder;
+	
+	public CalculatorScenario() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-jbehave.xml");
+		storyReportBulder = context.getBean("storyReportBulder", SpringStoryReporterBuilder.class);
+	}
+	
 
+	protected List<String> storyPaths() {
 		return new StoryFinder().findPaths(
 				CodeLocations.codeLocationFromPath("./target/test-classes/"),
 				"*.story", "");
 	}
 
+	
 	@Override
 	public List<CandidateSteps> candidateSteps() {
 		// varargs, can have more that one steps classes
 		return new InstanceStepsFactory(configuration(), new CalculatorSteps()).createCandidateSteps();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Configuration configuration() {
 		return new MostUsefulConfiguration()
 				// where to find the stories
 				.useStoryLoader(new LoadFromClasspath(this.getClass()))
-				.useStoryReporterBuilder(
-						new StoryReporterBuilder().withDefaultFormats()
-								.withFormats(
-										StoryReporterBuilder.Format.CONSOLE,
-										StoryReporterBuilder.Format.XML));
+				.useStoryReporterBuilder(new CalculatorScenario().storyReportBulder);
 	}
 
 }
