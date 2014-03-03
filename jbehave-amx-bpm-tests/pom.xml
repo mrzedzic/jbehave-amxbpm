@@ -16,24 +16,35 @@
 		<aspectj.version>1.6.12</aspectj.version>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources/filtered/</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/resources/verbatim/</directory>
-				<filtering>false</filtering>
-			</resource>
-			<resource>
-				<directory>src/test/resource/stories</directory>
-				<includes>
-					<include>**/*.story</include>
-				</includes>
-			</resource>
-		</resources>
+<!-- 		<resources> -->
+<!-- 			<resource> -->
+<!-- 				<directory>src/main/resources/filtered/</directory> -->
+<!-- 				<filtering>true</filtering> -->
+<!-- 			</resource> -->
+<!-- 			<resource> -->
+<!-- 				<directory>src/main/resources/verbatim/</directory> -->
+<!-- 				<filtering>false</filtering> -->
+<!-- 			</resource> -->
+<!-- 			<resource> -->
+<!-- 				<directory>src/test/resource/stories</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>**/*.story</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
+<!-- 		</resources> -->
 
 		<testResources>
 			<testResource>
@@ -62,8 +73,8 @@
 							<includes>
 								<include>**/*CalculatorScenario.java</include>
 							</includes>
-							<ignoreFailureInStories>true</ignoreFailureInStories>
-							<ignoreFailureInView>true</ignoreFailureInView>
+							<ignoreFailureInStories>false</ignoreFailureInStories>
+							<ignoreFailureInView>false</ignoreFailureInView>
 						</configuration>
 						<goals>
 							<goal>run-stories-as-embeddables</goal>
@@ -116,12 +127,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

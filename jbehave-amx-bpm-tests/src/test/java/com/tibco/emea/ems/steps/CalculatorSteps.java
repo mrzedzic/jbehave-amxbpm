@@ -48,11 +48,9 @@ public class CalculatorSteps {
 	}
 
 	@Then("the calculator return <result> in less than <maxWait> seconds")
-	public void receiveResults(@Named("result") int result,
-			@Named("maxWait") int maxTime) {
+	public void receiveResults(@Named("result") int result,	@Named("maxWait") int maxTime) {
 
-		TextMessage responseMessage = emsClient.receiveMessage(correlationId,
-				maxTime);
+		TextMessage responseMessage = emsClient.receiveMessage(correlationId, maxTime);
 
 		if (responseMessage == null) {
 			fail("response message was missing");
@@ -64,7 +62,6 @@ public class CalculatorSteps {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		assertEquals(result, Integer.parseInt(responseBody));
 
 	}
