@@ -71,7 +71,7 @@
 						<configuration>
 							<scope>test</scope>
 							<includes>
-								<include>**/*CalculatorScenario.java</include>
+								<include>**/*LoginScenario.java</include>
 							</includes>
 							<ignoreFailureInStories>false</ignoreFailureInStories>
 							<ignoreFailureInView>false</ignoreFailureInView>
