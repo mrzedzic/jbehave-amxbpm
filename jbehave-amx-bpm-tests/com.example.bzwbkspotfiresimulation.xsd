@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    xmlns="http://example.com/bzwbkspotfiresimulation" xmlns:tns1="http://example.com/bzwbkspotfiresimulation"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://example.com/bzwbkspotfiresimulation">
+  <xsd:annotation>
+    <xsd:documentation>BOMORIGIN::/BzWbkSpotfireSimulation/Business Objects/BzWbkSpotfireSimulation.bom</xsd:documentation>
+  </xsd:annotation>
+  <xsd:simpleType ecore:name="MakroRegion" id="_zJAGgL4yEeO-UKxHg9SSNw" name="MakroRegion">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration ecore:name="POLUDNIE" value="POLUDNIE"/>
+      <xsd:enumeration ecore:name="CENTRUM" value="CENTRUM"/>
+      <xsd:enumeration ecore:name="ZACHOD" value="ZACHOD"/>
+      <xsd:enumeration ecore:name="POLNOC" value="POLNOC"/>
+      <xsd:enumeration ecore:name="WSCHOD" value="WSCHOD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:name="Region" id="_-HNm4L46EeO-UKxHg9SSNw" name="Region">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration ecore:name="MAZOWIECKIE" value="MAZOWIECKIE"/>
+      <xsd:enumeration ecore:name="DOLNOSLASKIE" value="DOLNOSLASKIE"/>
+      <xsd:enumeration ecore:name="WIELKOPOLSKIE" value="WIELKOPOLSKIE"/>
+      <xsd:enumeration ecore:name="MALOPOLSKIE" value="MALOPOLSKIE"/>
+      <xsd:enumeration ecore:name="PODKARPACKIE" value="PODKARPACKIE"/>
+      <xsd:enumeration ecore:name="POMORSKIE" value="POMORSKIE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:name="Relation" id="__CpI8L8tEeO1OPT_lTX6SA" name="Relation">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration ecore:name="GRK" value="GRK"/>
+      <xsd:enumeration ecore:name="GRC" value="GRC"/>
+      <xsd:enumeration ecore:name="ROOT" value="ROOT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType ecore:name="Application" id="_FHkPwL4xEeO-UKxHg9SSNw" name="Application">
+    <xsd:sequence>
+      <xsd:element ecore:name="makroregion" id="_59kQ8L46EeO-UKxHg9SSNw" maxOccurs="1"
+          minOccurs="1" name="makroregion" type="tns1:MakroRegion"/>
+      <xsd:element ecore:name="region" id="_IuDX0L49EeO-UKxHg9SSNw" maxOccurs="1"
+          minOccurs="1" name="region" type="tns1:Region"/>
+      <xsd:element ecore:name="company" id="_le844L5UEeO-UKxHg9SSNw" maxOccurs="unbounded"
+          minOccurs="1" name="company" type="tns1:Company"/>
+      <xsd:element ecore:name="details" id="_q5hekL8tEeO1OPT_lTX6SA" maxOccurs="1"
+          minOccurs="1" name="details" type="tns1:ApplicationDetails"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="Company" id="_N9ssgL49EeO-UKxHg9SSNw" name="Company">
+    <xsd:sequence>
+      <xsd:element ecore:name="CIF" id="_fjmUwL5UEeO-UKxHg9SSNw" maxOccurs="1" minOccurs="0"
+          name="CIF">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element ecore:name="regon" id="_gR6zUL5UEeO-UKxHg9SSNw" maxOccurs="1" minOccurs="0"
+          name="regon">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element ecore:name="NIP" id="_hBTB0L5UEeO-UKxHg9SSNw" maxOccurs="1" minOccurs="0"
+          name="NIP">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element ecore:name="nazwa" id="_pyubML5UEeO-UKxHg9SSNw" maxOccurs="1" minOccurs="0"
+          name="nazwa">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element ecore:name="relation" id="_oTaGAL8vEeO1OPT_lTX6SA" maxOccurs="1"
+          minOccurs="1" name="relation" type="tns1:Relation"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="ApplicationDetails" id="_ebWtsL8tEeO1OPT_lTX6SA" name="ApplicationDetails">
+    <xsd:sequence>
+      <xsd:element ecore:name="amount" id="_lJ5pUL8tEeO1OPT_lTX6SA" maxOccurs="1"
+          minOccurs="1" name="amount" type="xsd:int"/>
+      <xsd:element ecore:name="startFrom" id="_wIjvQL8tEeO1OPT_lTX6SA" maxOccurs="1"
+          minOccurs="1" name="startFrom" type="xsd:date"/>
+      <xsd:element ecore:name="endTo" id="_0DPcIL8tEeO1OPT_lTX6SA" maxOccurs="1" minOccurs="1"
+          name="endTo" type="xsd:date"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="MakroRegionElement">
+    <xsd:simpleType>
+      <xsd:restriction base="MakroRegion"/>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:element name="RegionElement">
+    <xsd:simpleType>
+      <xsd:restriction base="Region"/>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:element name="RelationElement">
+    <xsd:simpleType>
+      <xsd:restriction base="Relation"/>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:element name="ApplicationElement" type="Application"/>
+  <xsd:element name="CompanyElement" type="Company"/>
+  <xsd:element name="ApplicationDetailsElement" type="ApplicationDetails"/>
+</xsd:schema>

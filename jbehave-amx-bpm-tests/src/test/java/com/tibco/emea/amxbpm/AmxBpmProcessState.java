@@ -8,5 +8,5 @@ package com.tibco.emea.amxbpm;
  *
  */
 public enum AmxBpmProcessState {
-	ACTIVE, SUSPENDED, HALTED, FAILED, CANCELLED
+	ACTIVE, SUSPENDED, HALTED, FAILED, CANCELLED, COMPLETED
 }

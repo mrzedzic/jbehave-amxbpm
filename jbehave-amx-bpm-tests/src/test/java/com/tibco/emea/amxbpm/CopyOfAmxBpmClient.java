@@ -30,7 +30,6 @@ import com.tibco.n2.de.services.InternalServiceFault;
 import com.tibco.n2.de.services.InvalidServiceRequestFault;
 import com.tibco.n2.process.management.api.BasicProcessTemplate;
 import com.tibco.n2.process.management.api.OperationInfo;
-import com.tibco.n2.process.management.api.ProcessInstance;
 import com.tibco.n2.process.management.api.QualifiedProcessName;
 import com.tibco.n2.process.management.api.StarterOperation;
 import com.tibco.n2.process.management.services.IllegalArgumentFault;
@@ -52,30 +51,25 @@ import com.tibco.n2.wp.services.WorkProcessingFault;
  * @author mrzedzic
  * 
  */
-public class AmxBpmClient {
+public class CopyOfAmxBpmClient {
 
 	Configuration.Protocol protocol = Configuration.Protocol.HTTP;
 	String host = "localhost";
 	int port = 8080;
-	String username = "tibco-admin";
+	String username = "Pawel Kukla";
 	LoginInfo user = new LoginInfo(username, null);
 	
-	SecurityHandler securityHandler = new DefaultSecurityHandler(username, "secret");
+	SecurityHandler securityHandler = new DefaultSecurityHandler(username, "alamakota");
 	ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
 
-	public AmxBpmClient() {
-		
-	}
-	
-	public LoginInfo getUserDetails(String name){
-		LoginInfo loginInfoUser = new LoginInfo(name, null);
+	public CopyOfAmxBpmClient() {
 		try {
-			
+			String guid = null;
 			LookupUserResponse lookupUserResponse = serviceConnector.getEntityResolverService().lookupUser(username, null, null, true);
 			if (lookupUserResponse.getDetailArray().length > 0) {
-				loginInfoUser.setGuid(lookupUserResponse.getDetailArray(0).getGuid());
+				guid = lookupUserResponse.getDetailArray(0).getGuid();
 			} else {
-				System.out.println("User="+name+" nie istnieje w LDAP");
+
 			}
 		}
 
@@ -88,7 +82,6 @@ public class AmxBpmClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return loginInfoUser;
 	}
 
 	public AmxBpmProcess startProcess(LoginInfo login, String processName) {
@@ -121,21 +114,6 @@ public class AmxBpmClient {
 			e.printStackTrace();
 		}
 		return newProcess;
-	}
-	
-	public ProcessInstance getProcessStatus(AmxBpmProcess myProcess){
-		ProcessInstance process = ProcessInstance.Factory.newInstance();
-		
-		try {
-			process = serviceConnector.getProcessManagerService().getProcessInstanceStatus(myProcess.getProcessId());
-		} catch (IllegalArgumentFault e) {
-			process.setState(AmxBpmProcessState.COMPLETED.toString());
-		} catch (OperationFailedFault e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return process;
 	}
 
 	public int getUserWorkItemsCount(LoginInfo login) {
@@ -193,18 +171,18 @@ public class AmxBpmClient {
 		return count;
 	}
 	
-	public BaseWorkRequest getWorkItemFromProcess(AmxBpmProcess process, LoginInfo user) {
+	public BaseWorkRequest getWorkItemFromProcess(AmxBpmProcess process) {
 		int startPos = 0;
 		int numberOfItems = 10;
 		int count = 0;
 		BaseWorkRequest workRequest = null;
 
-		XmlModelEntityId entityId = buildEntityId(user.getUserName(), user.getGuid());
+		XmlModelEntityId entityId = buildEntityId(process.getOwner().getUserName(), process.getOwner().getGuid());
 		OrderFilterCriteria oc = null; //buildOrderCriteria(process);
 
 		try {
 			GetWorkListItemsResponse items = serviceConnector.getWorkListService().getWorkListItems(oc, entityId, startPos, numberOfItems);
-//			System.out.println("size=" +  items.getWorkItemsArray().length);
+			System.out.println("size=" +  items.getWorkItemsArray().length);
 			for (WorkItem myWorkItem : items.getWorkItemsArray()) {
 				workRequest = getWorkRequest(myWorkItem.getId().getId(), myWorkItem.getId().getVersion(), process.getOwner());
 //				System.out.println("WorkItem,id="+myWorkItem.getId().getId()+";version="+myWorkItem.getId().getVersion()); //+;process="+myWorkItem.getAttributes().getAttribute14()
@@ -226,11 +204,11 @@ public class AmxBpmClient {
 	public WorkResponse openWorkItem(LoginInfo login, long workItemId, long workItemVersion) {
 		BaseWorkRequest workRequest = null;
 		WorkResponse openWorkItem = WorkResponse.Factory.newInstance();
-//		String uid = "";
+		String uid = "";
 		try{
 			workRequest = getWorkRequest(workItemId, workItemVersion, login);	
 			openWorkItem = serviceConnector.getWorkPresentationService().openWorkItem(workRequest);
-//			uid = openWorkItem.getWorkTypeDetail().getUid();
+			uid = openWorkItem.getWorkTypeDetail().getUid();
 //			System.out.println(openWorkItem.getPayloadModel().getSerializedPayload());
 //			System.out.println(uid + " " + openWorkItem.getWorkTypeDetail().getVersion());
 
@@ -279,6 +257,7 @@ public class AmxBpmClient {
 		
 		request.setChannelId("openspaceGWTPull_DefaultChannel");
 		request.setChannelType(ChannelType.OPENSPACE_CHANNEL);
+		
 		request.setAction(ActionType.COMPLETE);
 		
 		try {
