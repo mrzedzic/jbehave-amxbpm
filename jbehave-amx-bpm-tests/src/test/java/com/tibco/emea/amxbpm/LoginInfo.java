@@ -32,4 +32,10 @@ public class LoginInfo {
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}
+
+	@Override
+	public String toString() {
+		return "LoginInfo [userName=" + userName + "]";
+	}
+	
 }

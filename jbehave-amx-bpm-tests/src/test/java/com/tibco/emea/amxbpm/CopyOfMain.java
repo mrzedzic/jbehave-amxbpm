@@ -16,7 +16,7 @@ public class CopyOfMain {
 		mainProcess.setOwner(login);
 		
 		
-		mainProcess = a.startProcess(mainProcess.getOwner(), "TestCompleteWorkitemProcess");
+		mainProcess = a.startProcess(mainProcess.getOwner(), BusinessProcessNames.TestCompleteWorkitemProcess);
 		boolean areTasksOnMe = false;
 		while(!areTasksOnMe){
 			if(a.getUserWorkItemsCount(mainProcess.getOwner())==0){

@@ -91,9 +91,9 @@ public class AmxBpmClient {
 		return loginInfoUser;
 	}
 
-	public AmxBpmProcess startProcess(LoginInfo login, String processName) {
+	public AmxBpmProcess startProcess(LoginInfo login, BusinessProcessNames processName) {
 		QualifiedProcessName process = QualifiedProcessName.Factory.newInstance();
-		process.setProcessName(processName);
+		process.setProcessName(processName.toString());
 		AmxBpmProcess newProcess = new AmxBpmProcess();
 		newProcess.setOwner(login);
 		try {
@@ -108,7 +108,7 @@ public class AmxBpmClient {
 				if (operations != null && operations.length > 0) {
 					OperationInfo info = serviceConnector.getProcessManagerService().getStarterOperationInfo(templates[0].getProcessQName(), operations[0].getOperation());
 					String processId = serviceConnector.getProcessManagerService().createProcessInstance(templates[0].getProcessQName(), operations[0].getOperation(), null);
-					System.out.println("1. Utworzyłem proces = "+processId);
+					System.out.println("1. Utworzyłem proces " + processName.toString() +" o id="+processId);
 					newProcess.setProcessId(processId);
 					newProcess.setState(AmxBpmProcessState.ACTIVE);
 				}
@@ -148,9 +148,9 @@ public class AmxBpmClient {
 
 		try {
 			GetWorkListItemsResponse items = serviceConnector.getWorkListService().getWorkListItems(oc, entityId, startPos, numberOfItems);
-
-			System.out.println("2. Sprwdzam czy są taski na mnie, ile="+ items.sizeOfWorkItemsArray());
 			count = items.sizeOfWorkItemsArray();
+//			if(count>0)
+//				System.out.println("2. Sprwdzam czy są taski na "+ login.toString()+", ile="+ items.sizeOfWorkItemsArray());
 
 		} catch (InvalidEntityFault e) {
 			e.printStackTrace();
@@ -207,7 +207,7 @@ public class AmxBpmClient {
 //			System.out.println("size=" +  items.getWorkItemsArray().length);
 			for (WorkItem myWorkItem : items.getWorkItemsArray()) {
 				workRequest = getWorkRequest(myWorkItem.getId().getId(), myWorkItem.getId().getVersion(), process.getOwner());
-//				System.out.println("WorkItem,id="+myWorkItem.getId().getId()+";version="+myWorkItem.getId().getVersion()); //+;process="+myWorkItem.getAttributes().getAttribute14()
+				System.out.println("1 Są taski na "+ user.toString()+";name="+myWorkItem.getHeader().getName()+",id="+myWorkItem.getId().getId()+";version="+myWorkItem.getId().getVersion()); //+;process="+myWorkItem.getAttributes().getAttribute14()
 			}
 		} catch (InvalidEntityFault e) {
 			e.printStackTrace();
@@ -256,8 +256,8 @@ public class AmxBpmClient {
 //		File text = new File("C:/workspace/amx_bpm_bzwbk/BzWbkSpotfireSimulation/Forms/BzWbkSpotfireSimulation/1_Przygotowanie/WybrKlientaiGrupy/WybrKlientaiGrupy.data.json")
 		String myJsonPayload = "";
 		 FileInputStream inputStream = null;
-//		 String file = "C:/workspace/amx_bpm_bzwbk/BzWbkSpotfireSimulation/Forms/BzWbkSpotfireSimulation/1_Przygotowanie/WybrKlientaiGrupy/MyWybrKlientaiGrupy.data.json";
-		 String file = "C:/workspace/amx_bpm_bzwbk/TestCompleteWorkitem/Forms/TestCompleteWorkitem/TestCompleteWorkitemProcess/UserTask/MyUserTask.data.json";
+		 String file = "C:/workspace/amx_bpm_bzwbk/BzWbkSpotfireSimulation/Forms/BzWbkSpotfireSimulation/1_Przygotowanie/WybrKlientaiGrupy/MyWybrKlientaiGrupy.data.json";
+//		 String file = "C:/workspace/amx_bpm_bzwbk/TestCompleteWorkitem/Forms/TestCompleteWorkitem/TestCompleteWorkitemProcess/UserTask/MyUserTask.data.json";
 		try {
 			inputStream = new FileInputStream(file);
 			myJsonPayload = IOUtils.toString(inputStream);
@@ -303,15 +303,10 @@ public class AmxBpmClient {
 	}
 	
 	private XmlModelEntity buildEntityId(String userName, String guid) {
-		/** Cretate an instance of entity Id */
 		XmlModelEntity entityId = XmlModelEntity.Factory.newInstance();
-		/** set the user GUID */
 		entityId.setGuid(guid);
-		/** set the user name */
 		entityId.setName(userName);
-		/** set the entity type as RESOURCE */
 		entityId.setEntityType(OrganisationalEntityType.RESOURCE);
-		/** set the version of organisation */
 		entityId.setModelVersion(-1);
 		return entityId;
 	}
@@ -353,7 +348,7 @@ public class AmxBpmClient {
 		workTypeDetail.setUid(uid);
 		workTypeDetail.setVersion(version);
 		
-		System.out.println("WorkItem,id="+workItem2Open.getId()+";version="+workItem2Open.getVersion());
+//		System.out.println("WorkItem,id="+workItem2Open.getId()+";version="+workItem2Open.getVersion());
 		return workRequest;
 	}
 }
