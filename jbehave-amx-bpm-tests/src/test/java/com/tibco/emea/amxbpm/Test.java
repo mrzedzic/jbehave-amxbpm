@@ -12,11 +12,12 @@ public class Test {
 	LoginInfo login4 = new LoginInfo("Dyrektor Biznesowy", "EB73EA46-A3C4-467F-9A57-710A2CB7E61C");
 	
 	
-	public void test() throws InterruptedException{
+	public void test() throws InterruptedException, InstantiationException, IllegalAccessException{
 		byte stepNo = 0;
 		mainProcess.setOwner(login1);
 		
 		System.out.print(++stepNo+".");
+		System.out.println(a.getUserDetails(login1.getUserName()).getGuid());
 		mainProcess = a.startProcess(mainProcess.getOwner(), BusinessProcessNames.BzWbkTTY);
 		Thread.sleep(5*1000);
 		
@@ -46,7 +47,7 @@ public class Test {
 		}
 	}
 	
-	public void openProcessClose(LoginInfo login, byte step) throws InterruptedException{
+	public void openProcessClose(LoginInfo login, byte step) throws InterruptedException, InstantiationException, IllegalAccessException{
 		BaseWorkRequest work = a.getWorkItemFromProcess(mainProcess, login);
 //		Thread.sleep(5*1000);
 		WorkResponse openWorkItem= a.openWorkItem(login, work.getWorkItem().getId(), work.getWorkItem().getVersion());

@@ -31,19 +31,16 @@ public class EmsClient {
 	private Destination resultsQueue;
 
 	public EmsClient() {
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-				"classpath:applicationContext-ems-tests.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-ems-tests.xml");
 		jmsTemplate = context.getBean(JmsTemplate.class);
-		resultsQueue = context.getBean("bwUnitTestResultsQueue",
-				Destination.class);
+		resultsQueue = context.getBean("bwUnitTestResultsQueue", Destination.class);
 
 	}
 
 	public TextMessage receiveMessage(String correlationId, int waitTime) {
 
 		correlationId = "JMSCorrelationID='" + correlationId + "'";
-		TextMessage results = (TextMessage) jmsTemplate.receiveSelected(
-				resultsQueue, correlationId);
+		TextMessage results = (TextMessage) jmsTemplate.receiveSelected(resultsQueue, correlationId);
 		return results;
 	}
 

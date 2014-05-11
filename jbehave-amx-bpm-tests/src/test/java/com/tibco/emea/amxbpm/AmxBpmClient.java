@@ -8,7 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
+import com.tibco.bpm.de.api.base.XmlResourceDetail;
 import com.tibco.bpm.service.connector.ServiceConnector;
 import com.tibco.bpm.service.connector.ServiceConnectorFactory;
 import com.tibco.n2.brm.api.GetWorkListItemsResponseDocument.GetWorkListItemsResponse;
@@ -26,6 +28,7 @@ import com.tibco.n2.common.organisation.api.OrganisationalEntityType;
 import com.tibco.n2.common.organisation.api.XmlModelEntityId;
 import com.tibco.n2.de.api.XmlModelEntity;
 import com.tibco.n2.de.api.resolver.LookupUserResponseDocument.LookupUserResponse;
+import com.tibco.n2.de.services.DirectoryEngineFault;
 import com.tibco.n2.de.services.InternalServiceFault;
 import com.tibco.n2.de.services.InvalidServiceRequestFault;
 import com.tibco.n2.process.management.api.BasicProcessTemplate;
@@ -48,8 +51,8 @@ import com.tibco.n2.wp.services.DataOutOfSyncFault;
 import com.tibco.n2.wp.services.InvalidWorkRequestFault;
 import com.tibco.n2.wp.services.WorkItemUnavailableFault;
 import com.tibco.n2.wp.services.WorkProcessingFault;
-/**
- * @author mrzedzic
+/** .adapter.binding.WorkListService
+ * @author Marcin Rzedzicki
  * 
  */
 public class AmxBpmClient {
@@ -57,41 +60,64 @@ public class AmxBpmClient {
 	Configuration.Protocol protocol = Configuration.Protocol.HTTP;
 	String host = "localhost";
 	int port = 8080;
+	UserCredentialsConnectionFactoryAdapter adapter = null;
 	String username = "tibco-admin";
 	LoginInfo user = new LoginInfo(username, null);
-	
-	SecurityHandler securityHandler = new DefaultSecurityHandler(username, "secret");
-	ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
 
+	SecurityHandler securityHandler = new DefaultSecurityHandler(username, "secret");
+
+//	@Resource(name = "serviceConnectionFactory")
+//	private ServiceConnectorFactory serviceConnectionFactory;
+	
+	ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
+	
+//	@Resource(name = "amxBpmPort")
+//	private int amxBpmPort;
+
+	
 	public AmxBpmClient() {
+//		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-amxbpm-tests.xml");
+//		serviceConnectionFactory = context.getBean(ServiceConnectorFactory.class);
+//		amxBpmPort = context.getBean(Integer.class);
+		
 		
 	}
 	
 	public LoginInfo getUserDetails(String name){
+		
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
+		
 		LoginInfo loginInfoUser = new LoginInfo(name, null);
 		try {
 			
-			LookupUserResponse lookupUserResponse = serviceConnector.getEntityResolverService().lookupUser(username, null, null, true);
+			LookupUserResponse lookupUserResponse = serviceConnector.getEntityResolverService().lookupUser(name, null, null, true);
 			if (lookupUserResponse.getDetailArray().length > 0) {
 				loginInfoUser.setGuid(lookupUserResponse.getDetailArray(0).getGuid());
-			} else {
-				System.out.println("User="+name+" nie istnieje w LDAP");
+				String[] userGuids = {loginInfoUser.getGuid()};
+				XmlResourceDetail userDetails= serviceConnector.getOrgResourceService().getResource(userGuids)[0];
+				loginInfoUser.setPosition(userDetails.getPositionArray()[0].getLabel());
 			}
-		}
-
-		catch (com.tibco.n2.de.services.SecurityFault e) {
-
+		}catch (com.tibco.n2.de.services.SecurityFault e) {
+			e.printStackTrace();
 		} catch (InvalidServiceRequestFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InternalServiceFault e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DirectoryEngineFault e) {
 			e.printStackTrace();
 		}
 		return loginInfoUser;
 	}
+	
+	public AmxBpmProcess startProcess(LoginInfo login, String processName) {
+		return startProcess(login, BusinessProcessNames.BzWbkTTY);
+	}
 
 	public AmxBpmProcess startProcess(LoginInfo login, BusinessProcessNames processName) {
+		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
+
 		QualifiedProcessName process = QualifiedProcessName.Factory.newInstance();
 		process.setProcessName(processName.toString());
 		AmxBpmProcess newProcess = new AmxBpmProcess();
@@ -108,22 +134,21 @@ public class AmxBpmClient {
 				if (operations != null && operations.length > 0) {
 					OperationInfo info = serviceConnector.getProcessManagerService().getStarterOperationInfo(templates[0].getProcessQName(), operations[0].getOperation());
 					String processId = serviceConnector.getProcessManagerService().createProcessInstance(templates[0].getProcessQName(), operations[0].getOperation(), null);
-					System.out.println("1. Utworzyłem proces " + processName.toString() +" o id="+processId);
 					newProcess.setProcessId(processId);
 					newProcess.setState(AmxBpmProcessState.ACTIVE);
 				}
 			}
 		} catch (IllegalArgumentFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OperationFailedFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return newProcess;
 	}
 	
 	public ProcessInstance getProcessStatus(AmxBpmProcess myProcess){
+		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
 		ProcessInstance process = ProcessInstance.Factory.newInstance();
 		
 		try {
@@ -131,14 +156,15 @@ public class AmxBpmClient {
 		} catch (IllegalArgumentFault e) {
 			process.setState(AmxBpmProcessState.COMPLETED.toString());
 		} catch (OperationFailedFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return process;
 	}
 
 	public int getUserWorkItemsCount(LoginInfo login) {
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
+		
 		int startPos = 0;
 		int numberOfItems = 10;
 		int count = 0;
@@ -149,8 +175,6 @@ public class AmxBpmClient {
 		try {
 			GetWorkListItemsResponse items = serviceConnector.getWorkListService().getWorkListItems(oc, entityId, startPos, numberOfItems);
 			count = items.sizeOfWorkItemsArray();
-//			if(count>0)
-//				System.out.println("2. Sprwdzam czy są taski na "+ login.toString()+", ile="+ items.sizeOfWorkItemsArray());
 
 		} catch (InvalidEntityFault e) {
 			e.printStackTrace();
@@ -165,18 +189,19 @@ public class AmxBpmClient {
 		}
 		return count;
 	}
-	public int getUserWorkItemsCount(AmxBpmProcess process) {
+	public int getUserWorkItemsCount(AmxBpmProcess process, LoginInfo user, String workItemName) {
+		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
+		
 		int startPos = 0;
 		int numberOfItems = 10;
 		int count = 0;
 
-		XmlModelEntityId entityId = buildEntityId(process.getOwner().getUserName(), process.getOwner().getGuid());
-		OrderFilterCriteria oc = null;;
+		XmlModelEntityId entityId = buildEntityId(user.getUserName(), user.getGuid());
+		OrderFilterCriteria oc = buildOrderCriteria(process, workItemName);
 
 		try {
 			GetWorkListItemsResponse items = serviceConnector.getWorkListService().getWorkListItems(oc, entityId, startPos, numberOfItems);
-
-//			System.out.println("items.sizeOfWorkItemsArray()="+ items.sizeOfWorkItemsArray());
 			count = items.sizeOfWorkItemsArray();
 
 		} catch (InvalidEntityFault e) {
@@ -194,6 +219,9 @@ public class AmxBpmClient {
 	}
 	
 	public BaseWorkRequest getWorkItemFromProcess(AmxBpmProcess process, LoginInfo user) {
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
+		
 		int startPos = 0;
 		int numberOfItems = 10;
 		int count = 0;
@@ -223,7 +251,12 @@ public class AmxBpmClient {
 		return workRequest;
 	}
 	
-	public WorkResponse openWorkItem(LoginInfo login, long workItemId, long workItemVersion) {
+	public WorkResponse openWorkItem(LoginInfo login, long workItemId, long workItemVersion) throws InstantiationException, IllegalAccessException {
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+	
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
+		
+		
 		BaseWorkRequest workRequest = null;
 		WorkResponse openWorkItem = WorkResponse.Factory.newInstance();
 //		String uid = "";
@@ -235,43 +268,37 @@ public class AmxBpmClient {
 //			System.out.println(uid + " " + openWorkItem.getWorkTypeDetail().getVersion());
 
 		} catch (InvalidWorkRequestFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (WorkItemUnavailableFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (com.tibco.n2.wp.services.InternalServiceFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return openWorkItem;
 	}
 
 	public void saveOpenWorkItem(LoginInfo login, long workItemId, long workItemVersion, String uid, String uidVersion) {
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
 		
 		WorkRequest request = getWorkRequestS(workItemId, workItemVersion+1, login, uid, uidVersion);
 		request.setResourceId(login.getGuid());
 		DataPayload payload = request.addNewPayloadDetails();
 		payload.setPayloadMode(PayloadModeType.JSON);
-//		File text = new File("C:/workspace/amx_bpm_bzwbk/BzWbkSpotfireSimulation/Forms/BzWbkSpotfireSimulation/1_Przygotowanie/WybrKlientaiGrupy/WybrKlientaiGrupy.data.json")
 		String myJsonPayload = "";
 		 FileInputStream inputStream = null;
-		 String file = "C:/workspace/amx_bpm_bzwbk/BzWbkSpotfireSimulation/Forms/BzWbkSpotfireSimulation/1_Przygotowanie/WybrKlientaiGrupy/MyWybrKlientaiGrupy.data.json";
-//		 String file = "C:/workspace/amx_bpm_bzwbk/TestCompleteWorkitem/Forms/TestCompleteWorkitem/TestCompleteWorkitemProcess/UserTask/MyUserTask.data.json";
+		 String file = "src/test/resources/json/BzWbkTTY/WybrKlientaIGrupy/MyWybrKlientaiGrupy.data.json";
 		try {
 			inputStream = new FileInputStream(file);
 			myJsonPayload = IOUtils.toString(inputStream);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		       try {
 				inputStream.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		    }
@@ -283,24 +310,19 @@ public class AmxBpmClient {
 		
 		try {
 			serviceConnector.getWorkPresentationService().completeWorkItem(request);
-			
 		} catch (WorkProcessingFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidWorkRequestFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (com.tibco.n2.wp.services.InternalServiceFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (DataOutOfSyncFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ChainedTimeOutFault e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
 	
 	private XmlModelEntity buildEntityId(String userName, String guid) {
 		XmlModelEntity entityId = XmlModelEntity.Factory.newInstance();
@@ -318,9 +340,9 @@ public class AmxBpmClient {
 		return workItemObjId;
 	}
 	
-	private OrderFilterCriteria buildOrderCriteria(AmxBpmProcess process) {
+	private OrderFilterCriteria buildOrderCriteria(AmxBpmProcess process, String workItemName) {
 		OrderFilterCriteria orderCriteria = OrderFilterCriteria.Factory.newInstance();
-		orderCriteria.setFilter("attribute14='" + process.getProcessId()+"'");
+		orderCriteria.setFilter("attribute14='" + process.getProcessId()+"' AND name='"+ workItemName +"'");
 		return orderCriteria;
 	}
 	
@@ -332,8 +354,6 @@ public class AmxBpmClient {
 		workRequest.setResourceId(login.getGuid());
 		WorkTypeDetail workTypeDetail = workRequest.addNewWorkTypeDetail();
 		workTypeDetail.setOpenNextPiled(false);
-		
-//		System.out.println("WorkItem,id="+workItem2Open.getId()+";version="+workItem2Open.getVersion());
 		return workRequest;
 	}
 	
@@ -347,8 +367,6 @@ public class AmxBpmClient {
 		workTypeDetail.setOpenNextPiled(false);
 		workTypeDetail.setUid(uid);
 		workTypeDetail.setVersion(version);
-		
-//		System.out.println("WorkItem,id="+workItem2Open.getId()+";version="+workItem2Open.getVersion());
 		return workRequest;
 	}
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/jee
+            http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <context:annotation-config/>
+
+    <aop:aspectj-autoproxy/>
+
+
+    <!-- ================================================================== -->
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:${env}/bw_runner_test.properties"/>
+    </bean>
+
+    <util:properties id="jndiEnvironment" location="classpath:${env}/bw_runner_test.properties"/>
+
+
+    <!-- ================================================================== 
+    <jee:jndi-lookup id="amxBpmPort" jndi-name="${amxbpm.unit.port}" environment-ref="jndiEnvironment"/>
+    <jee:jndi-lookup id="amxBpmUser" jndi-name="${amxbpm.unit.user}" environment-ref="jndiEnvironment"/>
+    <jee:jndi-lookup id="amxBpmPasswd" jndi-name="${amxbpm.unit.passwd}" environment-ref="jndiEnvironment"/>
+    <jee:jndi-lookup id="amxBpmHost" jndi-name="${amxbpm.unit.host}" environment-ref="jndiEnvironment"/>
+    <jee:jndi-lookup id="amxBpmProtocol" jndi-name="${amxbpm.unit.protocol}" environment-ref="jndiEnvironment"/>
+
+	ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-amxbpm-tests.xml");
+		serviceConnector = context.getBean(ServiceConnector.class);
+//		amxBpmPort = context.getBean(Integer.class);
+		
+		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
+		System.out.println("done");
+-->
+    <!-- ================================================================== 
+    <bean id="connectionFactory"
+          class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter"
+          p:targetConnectionFactory-ref="rawConnectionFactory"
+          p:username="${jms.username}"
+          p:password="${jms.password}"/>
+
+    <bean id="serviceConnectionFactory"
+          class="com.tibco.bpm.service.connector.ServiceConnectorFactory"
+          p:serviceConnector-ref=""
+          />-->
+
+</beans>

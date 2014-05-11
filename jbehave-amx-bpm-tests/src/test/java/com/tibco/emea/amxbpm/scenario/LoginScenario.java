@@ -26,8 +26,7 @@ import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.tibco.emea.ems.scenario.CalculatorScenario;
-import com.tibco.emea.ems.steps.CalculatorSteps;
+import com.tibco.emea.amxbpm.steps.AmxBpmSteps;
 
 /**
  * @author mrzedzic
@@ -52,14 +51,14 @@ public class LoginScenario extends JUnitStories {
 	protected List<String> storyPaths() {
 		return new StoryFinder().findPaths(
 				CodeLocations.codeLocationFromPath("./target/test-classes/"),
-				"*.story", "");
+				"amx_scenario.story", "");
 	}
 
 	
 	@Override
 	public List<CandidateSteps> candidateSteps() {
 		// varargs, can have more that one steps classes
-		return new InstanceStepsFactory(configuration(), new CalculatorSteps()).createCandidateSteps();
+		return new InstanceStepsFactory(configuration(), new AmxBpmSteps()).createCandidateSteps();
 	}
 
 	@SuppressWarnings("deprecation")

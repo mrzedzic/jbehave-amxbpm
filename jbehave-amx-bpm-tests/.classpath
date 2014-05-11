@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="src/test/resources/filtered"/>
 	<classpathentry kind="src" path="src/test/resources/verbatim"/>
 	<classpathentry kind="src" path="src/test/resources/stories"/>
+	<classpathentry kind="src" path="src/test/resources/json"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -19,7 +20,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/tibco_bpm22/client-api/2.2/service-connectors/java-service-connector/amx-bpm-java-service-connector-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/tibco_bpm_220/client-api/2.2/service-connectors/java-service-connector/service-connector-1.4/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/tibco_bpm_220/client-api/2.2/service-connectors/java-service-connector/service-connector-1.4/amx-bpm-java-service-connector-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/tibco_bpm_220/client-api/2.2/service-connectors/java-service-connector/service-connector-1.4/antlr-2.7.7.jar"/>

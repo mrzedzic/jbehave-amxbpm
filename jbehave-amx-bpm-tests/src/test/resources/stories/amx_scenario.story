@@ -1,12 +1,30 @@
+Narrative:
+In order to make story development easier
+As a Story Developer
+I want to test if all users are able to start process
 
-Scenario: Login to AMX BPM local instance
-Given As I am PRM logged as tibco-admin 
-Then I would like to login to openspace
+Scenario: Users are registered in LDAP on proper positions
+Given zarejestrowanego <user>
+Then system sprawdzi czy jest on na pozycji <position>
 
-Mając zalogowanego użytkownika Paweł Kukla
-kiedy uruchomi on proces <nazwa procesu>
-kiedy możliwe będzie alokowane na niego zadania <nazwa tasku>
-wtedy otworzy formularz uzupełnienia danych wniosku
-wtedy przed wyslaniem uzupelni formularz wniosku
-kiedy możliwe będzie alokowane na niego zadania <nazwa tasku>
-kiedy zobaczy formularz uzupełnienia danych wniosku
+Examples:
+|user				|position			|
+|Pawel Kukla		|Partner Biznesowy	|
+|Marek Kozierski	|Partner Kredytowy	|
+|Dyrektor Biznesowy	|Dyrektor Biznesowy	|
+|Dyrektor Kredytowy	|Dyrektor Kredytowy	|
+
+
+Scenario: "Business partner" is able to start process
+Given rozpoczety proces BzWbkTTY przez
+|processOwner		|
+|Pawel Kukla		|
+|Marek Kozierski	|
+When system alokuje zadanie <taskName> na <taskOwner>
+Then <taskOwner> otworzy formularz wyszukania Klienta w CIS i wyszuka <clientName>
+
+
+Examples:
+|taskName			|taskOwner	|clientName|
+|WybrKlientaiGrupy	|Pawel Kukla|PKP|
+|WybrKlientaiGrupy	|Pawel Kukla|PKP|

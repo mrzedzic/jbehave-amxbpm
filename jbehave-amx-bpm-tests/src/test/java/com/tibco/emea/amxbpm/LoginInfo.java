@@ -11,8 +11,9 @@ public class LoginInfo {
 	/** Login Info object which has logged in user info */
 	private String userName;
 	private String guid;
+	private String position;
 
-	LoginInfo(String userName, String guid) {
+	public LoginInfo(String userName, String guid) {
 		this.userName = userName;
 		this.guid = guid;
 	}
@@ -36,6 +37,14 @@ public class LoginInfo {
 	@Override
 	public String toString() {
 		return "LoginInfo [userName=" + userName + "]";
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
 	}
 	
 }

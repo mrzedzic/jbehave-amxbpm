@@ -8,8 +8,10 @@ public class CopyOfMain {
 	/**
 	 * @param args
 	 * @throws InterruptedException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, InstantiationException, IllegalAccessException {
 		AmxBpmClient a = new AmxBpmClient();
 		AmxBpmProcess mainProcess = new AmxBpmProcess();
 		LoginInfo login = new LoginInfo("Pawel Kukla", "8DD524B5-6F16-4A06-9F3D-CA5C923D3BEF");
@@ -27,7 +29,7 @@ public class CopyOfMain {
 			}else{
 				areTasksOnMe = true;
 				while(true){
-					if(a.getUserWorkItemsCount(mainProcess)==0){
+					if(a.getUserWorkItemsCount(mainProcess, login, "")==0){
 						Thread.sleep(10*1000);
 						System.out.println("nie ma jeszcze tasku pod tym procesem");
 					}else{

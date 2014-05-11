@@ -48,7 +48,7 @@ public class CalculatorScenario extends JUnitStories {
 	protected List<String> storyPaths() {
 		return new StoryFinder().findPaths(
 				CodeLocations.codeLocationFromPath("./target/test-classes/"),
-				"*.story", "");
+				"calculator_scenario.story", "");
 	}
 
 	

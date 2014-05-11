@@ -11,7 +11,7 @@ public class Main {
 		
 		Test t = new Test();
 		int counter = 0;
-		for(;;){
+//		for(;;){
 			try {
 				System.out.println("----counter="+ ++counter+"--------");
 				t.test();
@@ -19,9 +19,15 @@ public class Main {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
-		}
+//		}
 		
 
 	}
