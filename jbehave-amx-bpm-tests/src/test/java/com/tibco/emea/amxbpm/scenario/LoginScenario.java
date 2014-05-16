@@ -66,7 +66,7 @@ public class LoginScenario extends JUnitStories {
 	@Override
 	public Configuration configuration() {
 		return new MostUsefulConfiguration()
-				.useParameterControls(new ParameterControls().useDelimiterNamedParameters(true))
+//				.useParameterControls(new ParameterControls().useDelimiterNamedParameters(true))
 				// where to find the stories
 				.useStoryLoader(new LoadFromClasspath(this.getClass()))
 				.useStoryReporterBuilder(new LoginScenario().storyReportBulder);

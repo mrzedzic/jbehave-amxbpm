@@ -91,7 +91,6 @@ public class AmxBpmSteps {
 	@When("system zaoferuje zadanie <taskName1> na <taskOwner1>")
 	public void checkIfTaskAllocated(@Named("taskName1") String taskName, @Named("taskOwner1") String taskOwner) {
 		try {
-			System.out.println("--------czekam 5 sec dla " + process.getProcessId());
 			Thread.sleep(5*1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -128,6 +127,39 @@ public class AmxBpmSteps {
 		checkIfTaskAllocated(taskName, taskOwner);
 	}
 	
+	@When("system zaoferuje zadanie <taskName4> na <taskOwner4>")
+	public void checkIfTaskAllocated4(@Named("taskName4") String taskName, @Named("taskOwner4") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	
+	@When("system zaoferuje zadanie <taskName5> na <taskOwner5>")
+	public void checkIfTaskAllocated5(@Named("taskName5") String taskName, @Named("taskOwner5") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName6> na <taskOwner6>")
+	public void checkIfTaskAllocated6(@Named("taskName6") String taskName, @Named("taskOwner6") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName7> na <taskOwner7>")
+	public void checkIfTaskAllocated7(@Named("taskName7") String taskName, @Named("taskOwner7") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName8> na <taskOwner8>")
+	public void checkIfTaskAllocated8(@Named("taskName8") String taskName, @Named("taskOwner8") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName9> na <taskOwner9>")
+	public void checkIfTaskAllocated9(@Named("taskName9") String taskName, @Named("taskOwner9") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName10> na <taskOwner10>")
+	public void checkIfTaskAllocated10(@Named("taskName10") String taskName, @Named("taskOwner10") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
+	@When("system zaoferuje zadanie <taskName11> na <taskOwner11>")
+	public void checkIfTaskAllocated11(@Named("taskName11") String taskName, @Named("taskOwner11") String taskOwner) {
+		checkIfTaskAllocated(taskName, taskOwner);
+	}
 	@Then("otworzy <taskOwner2> formularz i uzupelni go danymi <formName2> oraz zatwierdzi")
 	public void openUpdateAndSaveTask2(@Named("taskOwner2") String taskOwner, @Named("formName2") String formName) {
 		openUpdateAndSaveTask(taskOwner, formName);
@@ -137,4 +169,39 @@ public class AmxBpmSteps {
 	public void openUpdateAndSaveTask3(@Named("taskOwner3") String taskOwner, @Named("formName3") String formName) {
 		openUpdateAndSaveTask(taskOwner, formName);
 	}
+	
+	@Then("otworzy <taskOwner4> formularz i uzupelni go danymi <formName4> oraz zatwierdzi")
+	public void openUpdateAndSaveTask4(@Named("taskOwner4") String taskOwner, @Named("formName4") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	
+	@Then("otworzy <taskOwner5> formularz i uzupelni go danymi <formName5> oraz zatwierdzi")
+	public void openUpdateAndSaveTask5(@Named("taskOwner5") String taskOwner, @Named("formName5") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner6> formularz i uzupelni go danymi <formName6> oraz zatwierdzi")
+	public void openUpdateAndSaveTask6(@Named("taskOwner6") String taskOwner, @Named("formName6") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner7> formularz i uzupelni go danymi <formName7> oraz zatwierdzi")
+	public void openUpdateAndSaveTask7(@Named("taskOwner7") String taskOwner, @Named("formName7") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner8> formularz i uzupelni go danymi <formName8> oraz zatwierdzi")
+	public void openUpdateAndSaveTask8(@Named("taskOwner8") String taskOwner, @Named("formName8") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner9> formularz i uzupelni go danymi <formName9> oraz zatwierdzi")
+	public void openUpdateAndSaveTask9(@Named("taskOwner9") String taskOwner, @Named("formName9") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner10> formularz i uzupelni go danymi <formName10> oraz zatwierdzi")
+	public void openUpdateAndSaveTask10(@Named("taskOwner10") String taskOwner, @Named("formName10") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	@Then("otworzy <taskOwner11> formularz i uzupelni go danymi <formName11> oraz zatwierdzi")
+	public void openUpdateAndSaveTask11(@Named("taskOwner11") String taskOwner, @Named("formName11") String formName) {
+		openUpdateAndSaveTask(taskOwner, formName);
+	}
+	
 }
