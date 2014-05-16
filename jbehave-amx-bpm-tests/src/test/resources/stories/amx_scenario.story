@@ -16,15 +16,14 @@ Examples:
 
 
 Scenario: "Business partner" is able to start process
-Given rozpoczety proces BzWbkTTY przez
-|processOwner		|
-|Pawel Kukla		|
-|Marek Kozierski	|
-When system alokuje zadanie <taskName> na <taskOwner>
-Then <taskOwner> otworzy formularz wyszukania Klienta w CIS i wyszuka <clientName>
-
+Given rozpoczety proces BzWbkTTY przez <processOwner>
+When system zaoferuje zadanie <taskName1> na <taskOwner1>
+Then otworzy <taskOwner1> formularz i uzupelni go danymi <formName1> oraz zatwierdzi
+When system zaoferuje zadanie <taskName2> na <taskOwner2>
+Then otworzy <taskOwner2> formularz i uzupelni go danymi <formName2> oraz zatwierdzi
+When system zaoferuje zadanie <taskName3> na <taskOwner3>
+Then otworzy <taskOwner3> formularz i uzupelni go danymi <formName3> oraz zatwierdzi
 
 Examples:
-|taskName			|taskOwner	|clientName|
-|WybrKlientaiGrupy	|Pawel Kukla|PKP|
-|WybrKlientaiGrupy	|Pawel Kukla|PKP|
+|processOwner|taskName1		  |taskOwner1 |formName1	  |taskName2		|taskOwner2 |formName2			  |taskName3		|taskOwner3 |formName3			  |
+|Pawel Kukla|WybrKlientaiGrupy|Pawel Kukla|PKPWybrKlienta1|KolejkaprzedRONES|Pawel Kukla|PKPKolejkaPrzedRones1|RONESAkceptacjadyrektorabiznesowegoTeamLeadera|Dyrektor Biznesowy|PKPKolejkaPrzedRones1|

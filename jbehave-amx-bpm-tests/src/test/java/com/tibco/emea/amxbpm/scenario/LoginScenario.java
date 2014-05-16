@@ -22,6 +22,7 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterControls;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -65,6 +66,7 @@ public class LoginScenario extends JUnitStories {
 	@Override
 	public Configuration configuration() {
 		return new MostUsefulConfiguration()
+				.useParameterControls(new ParameterControls().useDelimiterNamedParameters(true))
 				// where to find the stories
 				.useStoryLoader(new LoadFromClasspath(this.getClass()))
 				.useStoryReporterBuilder(new LoginScenario().storyReportBulder);

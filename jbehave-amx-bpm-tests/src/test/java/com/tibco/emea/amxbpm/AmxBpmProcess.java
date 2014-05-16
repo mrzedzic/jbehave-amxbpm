@@ -11,6 +11,7 @@ public class AmxBpmProcess {
 	private String processId;
 	private LoginInfo owner;
 	private AmxBpmProcessState state;
+	private String currentTaskName;
 	
 	public AmxBpmProcess(){
 		
@@ -38,6 +39,13 @@ public class AmxBpmProcess {
 
 	public void setState(AmxBpmProcessState state) {
 		this.state = state;
+	}
+	public String getCurrentTaskName() {
+		return currentTaskName;
+	}
+
+	public void setCurrentTaskName(String currentTaskName) {
+		this.currentTaskName = currentTaskName;
 	}
 
 }

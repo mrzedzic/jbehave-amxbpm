@@ -14,7 +14,6 @@ import com.tibco.bpm.de.api.base.XmlResourceDetail;
 import com.tibco.bpm.service.connector.ServiceConnector;
 import com.tibco.bpm.service.connector.ServiceConnectorFactory;
 import com.tibco.n2.brm.api.GetWorkListItemsResponseDocument.GetWorkListItemsResponse;
-import com.tibco.n2.brm.api.ManagedObjectID;
 import com.tibco.n2.brm.api.OrderFilterCriteria;
 import com.tibco.n2.brm.api.WorkItem;
 import com.tibco.n2.brm.services.InvalidEntityFault;
@@ -60,10 +59,12 @@ public class AmxBpmClient {
 	Configuration.Protocol protocol = Configuration.Protocol.HTTP;
 	String host = "localhost";
 	int port = 8080;
+	String passwd = "alamakota";
 	UserCredentialsConnectionFactoryAdapter adapter = null;
 	String username = "tibco-admin";
 	LoginInfo user = new LoginInfo(username, null);
-
+	java.util.Map<BusinessForms, String> enumMap = new java.util.EnumMap<BusinessForms, String>(BusinessForms.class);
+	
 	SecurityHandler securityHandler = new DefaultSecurityHandler(username, "secret");
 
 //	@Resource(name = "serviceConnectionFactory")
@@ -78,9 +79,7 @@ public class AmxBpmClient {
 	public AmxBpmClient() {
 //		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext-amxbpm-tests.xml");
 //		serviceConnectionFactory = context.getBean(ServiceConnectorFactory.class);
-//		amxBpmPort = context.getBean(Integer.class);
-		
-		
+//		amxBpmPort = context.getBean(Integer.class);	
 	}
 	
 	public LoginInfo getUserDetails(String name){
@@ -88,6 +87,7 @@ public class AmxBpmClient {
 		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
 		
+
 		LoginInfo loginInfoUser = new LoginInfo(name, null);
 		try {
 			
@@ -115,7 +115,7 @@ public class AmxBpmClient {
 	}
 
 	public AmxBpmProcess startProcess(LoginInfo login, BusinessProcessNames processName) {
-		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		SecurityHandler securityHandler = new DefaultSecurityHandler(login.getUserName(), passwd);
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
 
 		QualifiedProcessName process = QualifiedProcessName.Factory.newInstance();
@@ -190,7 +190,7 @@ public class AmxBpmClient {
 		return count;
 	}
 	public int getUserWorkItemsCount(AmxBpmProcess process, LoginInfo user, String workItemName) {
-		SecurityHandler securityHandler = new DefaultSecurityHandler("tibco-admin", "secret");
+		SecurityHandler securityHandler = new DefaultSecurityHandler(user.getUserName(), passwd);
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler);
 		
 		int startPos = 0;
@@ -219,7 +219,7 @@ public class AmxBpmClient {
 	}
 	
 	public BaseWorkRequest getWorkItemFromProcess(AmxBpmProcess process, LoginInfo user) {
-		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler(user.getUserName(), passwd);
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
 		
 		int startPos = 0;
@@ -228,14 +228,14 @@ public class AmxBpmClient {
 		BaseWorkRequest workRequest = null;
 
 		XmlModelEntityId entityId = buildEntityId(user.getUserName(), user.getGuid());
-		OrderFilterCriteria oc = null; //buildOrderCriteria(process);
+		OrderFilterCriteria oc = buildOrderCriteria(process);
 
 		try {
 			GetWorkListItemsResponse items = serviceConnector.getWorkListService().getWorkListItems(oc, entityId, startPos, numberOfItems);
 //			System.out.println("size=" +  items.getWorkItemsArray().length);
 			for (WorkItem myWorkItem : items.getWorkItemsArray()) {
 				workRequest = getWorkRequest(myWorkItem.getId().getId(), myWorkItem.getId().getVersion(), process.getOwner());
-				System.out.println("1 Są taski na "+ user.toString()+";name="+myWorkItem.getHeader().getName()+",id="+myWorkItem.getId().getId()+";version="+myWorkItem.getId().getVersion()); //+;process="+myWorkItem.getAttributes().getAttribute14()
+//				System.out.println("1 Są taski na "+ user.toString()+";name="+myWorkItem.getHeader().getName()+",id="+myWorkItem.getId().getId()+";version="+myWorkItem.getId().getVersion()); //+;process="+myWorkItem.getAttributes().getAttribute14()
 			}
 		} catch (InvalidEntityFault e) {
 			e.printStackTrace();
@@ -252,11 +252,9 @@ public class AmxBpmClient {
 	}
 	
 	public WorkResponse openWorkItem(LoginInfo login, long workItemId, long workItemVersion) throws InstantiationException, IllegalAccessException {
-		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
-	
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler(login.getUserName(), passwd);
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
-		
-		
+	
 		BaseWorkRequest workRequest = null;
 		WorkResponse openWorkItem = WorkResponse.Factory.newInstance();
 //		String uid = "";
@@ -266,7 +264,6 @@ public class AmxBpmClient {
 //			uid = openWorkItem.getWorkTypeDetail().getUid();
 //			System.out.println(openWorkItem.getPayloadModel().getSerializedPayload());
 //			System.out.println(uid + " " + openWorkItem.getWorkTypeDetail().getVersion());
-
 		} catch (InvalidWorkRequestFault e) {
 			e.printStackTrace();
 		} catch (WorkItemUnavailableFault e) {
@@ -277,8 +274,8 @@ public class AmxBpmClient {
 		return openWorkItem;
 	}
 
-	public void saveOpenWorkItem(LoginInfo login, long workItemId, long workItemVersion, String uid, String uidVersion) {
-		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler("tibco-admin", "secret");
+	public void saveOpenWorkItem(LoginInfo login, String formName, long workItemId, long workItemVersion, String uid, String uidVersion, String prcId) {
+		DefaultSecurityHandler securityHandler1 =  new DefaultSecurityHandler(login.getUserName(), passwd);
 		ServiceConnector serviceConnector = ServiceConnectorFactory.getServiceConnector(protocol, host, port, securityHandler1);
 		
 		WorkRequest request = getWorkRequestS(workItemId, workItemVersion+1, login, uid, uidVersion);
@@ -286,11 +283,13 @@ public class AmxBpmClient {
 		DataPayload payload = request.addNewPayloadDetails();
 		payload.setPayloadMode(PayloadModeType.JSON);
 		String myJsonPayload = "";
-		 FileInputStream inputStream = null;
-		 String file = "src/test/resources/json/BzWbkTTY/WybrKlientaIGrupy/MyWybrKlientaiGrupy.data.json";
+		FileInputStream inputStream = null;
+		prepareMap();
+		String file = enumMap.get(BusinessForms.valueOf(formName));
 		try {
 			inputStream = new FileInputStream(file);
 			myJsonPayload = IOUtils.toString(inputStream);
+			myJsonPayload = myJsonPayload.replaceAll("myApplicationId", prcId);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
@@ -303,11 +302,9 @@ public class AmxBpmClient {
 			}
 		    }
 		payload.setSerializedPayload(myJsonPayload);
-		
 		request.setChannelId("openspaceGWTPull_DefaultChannel");
 		request.setChannelType(ChannelType.OPENSPACE_CHANNEL);
 		request.setAction(ActionType.COMPLETE);
-		
 		try {
 			serviceConnector.getWorkPresentationService().completeWorkItem(request);
 		} catch (WorkProcessingFault e) {
@@ -333,11 +330,10 @@ public class AmxBpmClient {
 		return entityId;
 	}
 	
-	private ManagedObjectID buildManagedObjectID(Long workItemId, Long workItemVersion) {
-		ManagedObjectID workItemObjId = ManagedObjectID.Factory.newInstance();
-		workItemObjId.setId(workItemId);
-		workItemObjId.setVersion(workItemVersion);
-		return workItemObjId;
+	private OrderFilterCriteria buildOrderCriteria(AmxBpmProcess process) {
+		OrderFilterCriteria orderCriteria = OrderFilterCriteria.Factory.newInstance();
+		orderCriteria.setFilter("attribute14='" + process.getProcessId()+"' AND name='"+ process.getCurrentTaskName() +"'");
+		return orderCriteria;
 	}
 	
 	private OrderFilterCriteria buildOrderCriteria(AmxBpmProcess process, String workItemName) {
@@ -369,4 +365,13 @@ public class AmxBpmClient {
 		workTypeDetail.setVersion(version);
 		return workRequest;
 	}
+	
+	private void prepareMap(){
+		enumMap.put(BusinessForms.PKPWybrKlienta1, "src/test/resources/json/BzWbkTTY/WybrKlientaIGrupy/MyWybrKlientaiGrupy.data.json");
+		enumMap.put(BusinessForms.PKPWybrKlienta2, "src/test/resources/json/BzWbkTTY/WybrKlientaIGrupy/MyWybrKlientaiGrupy2.data.json");
+		enumMap.put(BusinessForms.PKPKolejkaPrzedRones1, "src/test/resources/json/BzWbkTTY/KolejkaprzedRONES/KolejkaprzedRONES.data.json");
+		enumMap.put(BusinessForms.PKPKolejkaPrzedRones2, "src/test/resources/json/BzWbkTTY/KolejkaprzedRONES/KolejkaprzedRONES.data.json");
+	}
+	
+	
 }

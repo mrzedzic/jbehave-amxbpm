@@ -51,7 +51,7 @@ public class Test {
 		BaseWorkRequest work = a.getWorkItemFromProcess(mainProcess, login);
 //		Thread.sleep(5*1000);
 		WorkResponse openWorkItem= a.openWorkItem(login, work.getWorkItem().getId(), work.getWorkItem().getVersion());
-		a.saveOpenWorkItem(login, work.getWorkItem().getId(), work.getWorkItem().getVersion(), openWorkItem.getWorkTypeDetail().getUid(), openWorkItem.getWorkTypeDetail().getVersion());
+		a.saveOpenWorkItem(login, "PKPWybrKlienta1", work.getWorkItem().getId(), work.getWorkItem().getVersion(), openWorkItem.getWorkTypeDetail().getUid(), openWorkItem.getWorkTypeDetail().getVersion(), mainProcess.getProcessId());
 		Thread.sleep(5*1000);
 		System.out.println(step+".2 "+login.toString()+" zamknal taskid=" +work.getWorkItem().getId());
 	}
